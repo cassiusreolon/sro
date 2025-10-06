@@ -63,8 +63,8 @@ public class DocumentoRequestDto
     //[JsonPropertyName("beneficiario_final")]
     //public List<BeneficiarioDto>? BeneficiarioFinal { get; set; }
 
-    //[JsonPropertyName("intermediario")]
-    //public List<IntermediarioDto>? Intermediario { get; set; }
+    [JsonPropertyName("intermediario")]
+    public List<IntermediarioDto>? Intermediario { get; set; }
 
     //[JsonPropertyName("cobertura_risco_seguro")]
     //public List<CoberturaRiscoSeguroDto>? CoberturaRiscoSeguro { get; set; }

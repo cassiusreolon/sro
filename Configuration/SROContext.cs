@@ -8,7 +8,7 @@ namespace sro.Configuration
         public DbSet<Documento>? Documento { get; set; } = null!;
         //public DbSet<SeguradoParticipante>? SeguradoParticipante { get; set; } = null!;
         //public DbSet<Beneficiario>? Beneficiario { get; set; } = null!;
-        //public DbSet<Intermediario>? Intermediario { get; set; } = null!;
+        public DbSet<Intermediario>? Intermediario { get; set; } = null!;
         //public DbSet<CoberturaRiscoSeguro>? CoberturaRiscoSeguro { get; set; } = null!;
         //public DbSet<Carencia>? Carencia { get; set; } = null!;
 
@@ -18,6 +18,12 @@ namespace sro.Configuration
         {
             // Configurar o nome da tabela para coincidir com o banco (singular)
             modelBuilder.Entity<Documento>().ToTable("Documento");
+            modelBuilder.Entity<Intermediario>().ToTable("Intermediario");
+
+            modelBuilder.Entity<Documento>()
+                .HasMany(d => d.Intermediarios)
+                .WithOne(i => i.Documento)
+                .HasForeignKey(i => i.DocumentoId);
             
             /* Relacionamentos comentados - descomente conforme necessário
             // Documento
@@ -30,11 +36,6 @@ namespace sro.Configuration
                 .HasMany(d => d.Beneficiarios)
                 .WithOne(b => b.Documento)
                 .HasForeignKey(b => b.DocumentoId);
-
-            modelBuilder.Entity<Documento>()
-                .HasMany(d => d.Intermediarios)
-                .WithOne(i => i.Documento)
-                .HasForeignKey(i => i.DocumentoId);
 
             modelBuilder.Entity<Documento>()
                 .HasMany(d => d.CoberturasRiscoSeguro)
@@ -50,7 +51,7 @@ namespace sro.Configuration
             // Outras tabelas
             modelBuilder.Entity<SeguradoParticipante>().ToTable("SeguradoParticipante");
             modelBuilder.Entity<Beneficiario>().ToTable("Beneficiario");
-            modelBuilder.Entity<Intermediario>().ToTable("Intermediario");
+            
             modelBuilder.Entity<CoberturaRiscoSeguro>().ToTable("CoberturaRiscoSeguro");
             modelBuilder.Entity<Carencia>().ToTable("Carencia");
             */

@@ -12,7 +12,7 @@ public class Intermediario
     public short TipoDocumento { get; set; }
     public string Nome { get; set; } = string.Empty;
     public string CodigoPostal { get; set; } = string.Empty;
-    public string Uf { get; set; } = string.Empty;
+    public string UF { get; set; } = string.Empty;
     public string Pais { get; set; } = string.Empty;
     public decimal ValorComissaoReal { get; set; } = 0;
     public decimal? ValorComissaoMoedaOriginal { get; set; }

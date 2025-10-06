@@ -18,8 +18,15 @@ namespace sro.Controllers
         [HttpPost("enviar")]
         public async Task<IActionResult> EnviarDocumentosRegistro()
         {
-            await _documentoService.EnviarDocumentosRegistroAsync();
-            return Ok(new { mensagem = "Documentos enviados com sucesso (se houver documentos para envio)." });
+            var documentosRequestDto = await _documentoService.EnviarDocumentosRegistroAsync();
+            if (documentosRequestDto == null || !documentosRequestDto.Any())
+                return Ok(new { mensagem = "Nenhum documento para enviar!" });
+
+            return Ok(new {
+                data = new {
+                    documentos = documentosRequestDto 
+                }
+            });
         }
     }
 }

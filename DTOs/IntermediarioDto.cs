@@ -5,19 +5,19 @@ namespace sro.DTOs
     public class IntermediarioDto
     {
         [JsonPropertyName("documento")]
-        public string Documento { get; set; } = string.Empty;
+        public string DocumentoIdentificacao { get; set; } = string.Empty;
 
         [JsonPropertyName("tipo_comissao")]
         public int TipoComissao { get; set; }
 
         [JsonPropertyName("tipo")]
-        public int Tipo { get; set; }
+        public int TipoIntermediario { get; set; }
 
         [JsonPropertyName("descricao_intermediario")]
         public string? DescricaoIntermediario { get; set; }
 
         [JsonPropertyName("codigo")]
-        public string Codigo { get; set; } = string.Empty;
+        public string? Codigo { get; set; }
 
         [JsonPropertyName("tipo_documento")]
         public int TipoDocumento { get; set; }

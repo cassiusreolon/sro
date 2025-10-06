@@ -22,7 +22,7 @@ public class Documento
     public DateTime DataEmissao { get; set; }
     public DateTime DataInicio { get; set; }
     public DateTime DataTermino { get; set; }
-    public string? MoedaApolice { get; set; }
+    public string MoedaApolice { get; set; } = string.Empty;
     public decimal LimiteMaximoGarantiaReal { get; set; }
     public decimal? LimiteMaximoGarantiaMoedaOriginal { get; set; }
     public decimal? PercentualRetido { get; set; }

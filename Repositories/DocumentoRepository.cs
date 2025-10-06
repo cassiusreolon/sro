@@ -26,6 +26,7 @@ namespace sro.Repositories
                 return new List<Documento>();
 
             return await _context.Documento
+                .Include(d => d.Intermediarios) // Carrega os Intermediarios relacionados
                 //.Where(d => d.DataEnvio == null && d.LiberadoEnvio == true) // Exemplo de filtro para documentos não enviados
                 .ToListAsync();
         }

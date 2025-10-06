@@ -1,6 +1,7 @@
 using sro.Configuration;
 using sro.Repositories;
 using sro.DTOs;
+using Microsoft.IdentityModel.Tokens;
 
 namespace sro.Services;
 public class DocumentoService
@@ -12,19 +13,21 @@ public class DocumentoService
         _context = context;
     }
 
-    public async Task<DocumentoRequestDto> EnviarDocumentosRegistroAsync()
+    public async Task<List<DocumentoRequestDto>> EnviarDocumentosRegistroAsync()
     {
         //string sroApiUrl = "https://Caminho_backend/api/documentos/v3/registro"; // URL da API externa
 
         var documentos = await new DocumentoRepository(_context).ObterDocumentosParaEnvioAsync();
         if (documentos.Count == 0)
-            return null;
+            return new List<DocumentoRequestDto>();
+
+        var documentosProcessados = new List<DocumentoRequestDto>();
 
         // Para cada documento a enviar
-        /* foreach (var documento in documentos)
+        foreach (var documento in documentos)
         {
             // Carrega os demais dados relacionados ao documento em questao
-            _documentoRequestDto = new DocumentoRequestDto
+            var documentoRequestDto = new DocumentoRequestDto
             {
                 CodigoSeguradora = documento.CodigoSeguradora,
                 ApoliceCodigo = documento.ApoliceCodigo,
@@ -43,25 +46,31 @@ public class DocumentoService
                 PossuiBeneficiarioFinal = documento.PossuiBeneficiarioFinal,
                 PossuiIntermediario = documento.PossuiIntermediario,
                 RetificacaoRegistro = documento.RetificacaoRegistro,
-                SeguradoParticipante = new List<SeguradoParticipanteDto>()
+                Intermediario = new List<IntermediarioDto>()
             };
 
-            // SeguradoParticipante = ... // Carregar lista de segurados/participantes relacionados
-            foreach (var segurado in documento.Segurados)
+            foreach (var intermediario in documento.Intermediarios)
             {
-                _documentoRequestDto.SeguradoParticipante.Add(new SeguradoParticipanteDto
+                var intermediarioDto = new IntermediarioDto
                 {
-                    Documento = segurado.DocumentoIdentificacao,
-                    TipoDocumento = segurado.TipoDocumento,
-                    Nome = segurado.Nome,
-                    NomeSocial = segurado.NomeSocial,
-                    DataNascimento = segurado.DataNascimento,
-                    Sexo = segurado.Sexo,
-                    CodigoPostal = segurado.CodigoPostal,
-                    UF = segurado.UF
-                });
+                    DocumentoIdentificacao = intermediario.DocumentoIdentificacao,
+                    TipoComissao = intermediario.TipoComissao,
+                    TipoIntermediario = intermediario.TipoIntermediario,
+                    DescricaoIntermediario = intermediario.DescricaoIntermediario,
+                    Codigo = intermediario.Codigo,
+                    TipoDocumento = intermediario.TipoDocumento,
+                    Nome = intermediario.Nome,
+                    CodigoPostal = intermediario.CodigoPostal,
+                    UF = intermediario.UF,
+                    Pais = intermediario.Pais,
+                    ValorComissaoReal = intermediario.ValorComissaoReal
+                };
+                documentoRequestDto.Intermediario.Add(intermediarioDto);
             }
+            
+           
 
+            // SeguradoParticipante = ... // Carregar lista de segurados/participantes relacionados
             // Beneficiarios = ... // Carregar lista de beneficiarios relacionados
             // Intermediarios = ... // Carregar lista de intermediarios relacionados
 
@@ -69,10 +78,11 @@ public class DocumentoService
             // Enviar via HttpClient para a API externa
 
             //atualiza o campo data_envio do documento no banco de dados
-
-            return _documentoRequestDto;
+            
+            // Adiciona o documento processado à lista
+            documentosProcessados.Add(documentoRequestDto);
         }
-        */
-        return null;
+        
+        return documentosProcessados;
     }
 }
