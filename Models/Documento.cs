@@ -3,7 +3,7 @@ namespace sro.Models;
 public class Documento
 {
     public long Id { get; set; }
-    public string Guid { get; set; } = string.Empty;
+    public Guid Guid { get; set; }
     public short? Sucursal { get; set; }
     public short? RamoSisseg { get; set; }
     public int? NumeroApolice { get; set; }

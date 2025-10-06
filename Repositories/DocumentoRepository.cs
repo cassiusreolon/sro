@@ -22,10 +22,10 @@ namespace sro.Repositories
         {
             var connectionString = _context.Database.GetDbConnection().ConnectionString;
 
-            if (_context.Documentos == null)
+            if (_context.Documento == null)
                 return new List<Documento>();
 
-            return await _context.Documentos
+            return await _context.Documento
                 //.Where(d => d.DataEnvio == null && d.LiberadoEnvio == true) // Exemplo de filtro para documentos não enviados
                 .ToListAsync();
         }

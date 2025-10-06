@@ -2,6 +2,7 @@ using sro.Configuration;
 using sro.Repositories;
 using sro.DTOs;
 
+namespace sro.Services;
 public class DocumentoService
 {
     private readonly SROContext _context;

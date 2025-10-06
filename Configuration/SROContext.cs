@@ -5,18 +5,22 @@ namespace sro.Configuration
 {
     public class SROContext : DbContext
     {
-        public DbSet<Documento>? Documentos { get; set; } = null!;
-        //public DbSet<SeguradoParticipante>? SeguradosParticipantes { get; set; } = null!;
-        //public DbSet<Beneficiario>? Beneficiarios { get; set; } = null!;
-        //public DbSet<Intermediario>? Intermediarios { get; set; } = null!;
-        //public DbSet<CoberturaRiscoSeguro>? CoberturasRiscoSeguro { get; set; } = null!;
-        //public DbSet<Carencia>? Carencias { get; set; } = null!;
+        public DbSet<Documento>? Documento { get; set; } = null!;
+        //public DbSet<SeguradoParticipante>? SeguradoParticipante { get; set; } = null!;
+        //public DbSet<Beneficiario>? Beneficiario { get; set; } = null!;
+        //public DbSet<Intermediario>? Intermediario { get; set; } = null!;
+        //public DbSet<CoberturaRiscoSeguro>? CoberturaRiscoSeguro { get; set; } = null!;
+        //public DbSet<Carencia>? Carencia { get; set; } = null!;
 
         public SROContext(DbContextOptions<SROContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*// Documento
+            // Configurar o nome da tabela para coincidir com o banco (singular)
+            modelBuilder.Entity<Documento>().ToTable("Documento");
+            
+            /* Relacionamentos comentados - descomente conforme necessário
+            // Documento
             modelBuilder.Entity<Documento>()
                 .HasMany(d => d.SeguradosParticipantes)
                 .WithOne(sp => sp.Documento)
@@ -43,13 +47,13 @@ namespace sro.Configuration
                 .WithOne(car => car.CoberturaRiscoSeguro)
                 .HasForeignKey(car => car.CoberturaRiscoSeguroId);
 
-            // Configurar o nome das tabelas para coincidir com o banco
-            modelBuilder.Entity<Documento>().ToTable("Documento", schema: "dbo");
-            modelBuilder.Entity<SeguradoParticipante>().ToTable("SeguradoParticipante", schema: "dbo");
-            modelBuilder.Entity<Beneficiario>().ToTable("Beneficiario", schema: "dbo");
-            modelBuilder.Entity<Intermediario>().ToTable("Intermediario", schema: "dbo");
-            modelBuilder.Entity<CoberturaRiscoSeguro>().ToTable("CoberturaRiscoSeguro", schema: "dbo");
-            modelBuilder.Entity<Carencia>().ToTable("Carencia", schema: "dbo");*/
+            // Outras tabelas
+            modelBuilder.Entity<SeguradoParticipante>().ToTable("SeguradoParticipante");
+            modelBuilder.Entity<Beneficiario>().ToTable("Beneficiario");
+            modelBuilder.Entity<Intermediario>().ToTable("Intermediario");
+            modelBuilder.Entity<CoberturaRiscoSeguro>().ToTable("CoberturaRiscoSeguro");
+            modelBuilder.Entity<Carencia>().ToTable("Carencia");
+            */
         }
     }
 }
