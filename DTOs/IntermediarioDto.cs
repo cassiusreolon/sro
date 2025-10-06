@@ -36,8 +36,5 @@ namespace sro.DTOs
 
         [JsonPropertyName("valor_comissao_real")]
         public decimal ValorComissaoReal { get; set; }
-
-        [JsonPropertyName("valor_comissao_moeda_original")]
-        public decimal ValorComissaoMoedaOriginal { get; set; }
     }
 }

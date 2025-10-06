@@ -24,7 +24,7 @@ namespace sro.Controllers
 
             return Ok(new {
                 data = new {
-                    documentos = documentosRequestDto 
+                    documento = documentosRequestDto 
                 }
             });
         }

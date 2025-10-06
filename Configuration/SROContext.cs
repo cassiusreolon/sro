@@ -24,6 +24,48 @@ namespace sro.Configuration
                 .HasMany(d => d.Intermediarios)
                 .WithOne(i => i.Documento)
                 .HasForeignKey(i => i.DocumentoId);
+
+            // Configurações de precisão para propriedades decimal
+            modelBuilder.Entity<Intermediario>()
+                .Property(i => i.ValorComissaoReal)
+                .HasPrecision(18, 2); // 18 dígitos totais, 2 casas decimais
+
+            // Configurações de precisão para Documento
+            modelBuilder.Entity<Documento>()
+                .Property(d => d.LimiteMaximoGarantiaReal)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Documento>()
+                .Property(d => d.LimiteMaximoGarantiaMoedaOriginal)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Documento>()
+                .Property(d => d.PercentualRetido)
+                .HasPrecision(7, 4);
+
+            modelBuilder.Entity<Documento>()
+                .Property(d => d.ValorTotalReal)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Documento>()
+                .Property(d => d.AdicionalFracionamento)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Documento>()
+                .Property(d => d.ValorCarregamentoTotal)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Documento>()
+                .Property(d => d.Iof)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Documento>()
+                .Property(d => d.ValorSegurado)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Documento>()
+                .Property(d => d.ValorEstipulante)
+                .HasPrecision(18, 2);
             
             /* Relacionamentos comentados - descomente conforme necessário
             // Documento

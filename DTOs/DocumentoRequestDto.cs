@@ -36,9 +36,6 @@ public class DocumentoRequestDto
     [JsonPropertyName("limite_maximo_garantia_real")]
     public decimal LimiteMaximoGarantiaReal { get; set; } = 0;
 
-    [JsonPropertyName("limite_maximo_garantia_moeda_original")]
-    public decimal? LimiteMaximoGarantiaMoedaOriginal { get; set; }
-
     [JsonPropertyName("percentual_retido")]
     public decimal? PercentualRetido { get; set; }
 

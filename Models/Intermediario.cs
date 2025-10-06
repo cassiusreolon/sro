@@ -15,7 +15,6 @@ public class Intermediario
     public string UF { get; set; } = string.Empty;
     public string Pais { get; set; } = string.Empty;
     public decimal ValorComissaoReal { get; set; } = 0;
-    public decimal? ValorComissaoMoedaOriginal { get; set; }
 
     // Navigation
     public Documento Documento { get; set; } = null!;

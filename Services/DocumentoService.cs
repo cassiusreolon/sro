@@ -40,7 +40,6 @@ public class DocumentoService
                 DataTermino = documento.DataTermino,
                 MoedaApolice = documento.MoedaApolice,
                 LimiteMaximoGarantiaReal = documento.LimiteMaximoGarantiaReal,
-                LimiteMaximoGarantiaMoedaOriginal = documento.LimiteMaximoGarantiaMoedaOriginal,
                 PercentualRetido = documento.PercentualRetido,
                 PossuiBeneficiario = documento.PossuiBeneficiario,
                 PossuiBeneficiarioFinal = documento.PossuiBeneficiarioFinal,

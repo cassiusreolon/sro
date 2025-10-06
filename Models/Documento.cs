@@ -31,7 +31,6 @@ public class Documento
     public bool PossuiIntermediario { get; set; }
     public bool RetificacaoRegistro { get; set; }
     public decimal ValorTotalReal { get; set; }
-    public decimal? ValorTotalMoedaOriginal { get; set; }
     public decimal AdicionalFracionamento { get; set; }
     public decimal ValorCarregamentoTotal { get; set; }
     public decimal Iof { get; set; }
