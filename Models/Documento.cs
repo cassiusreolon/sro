@@ -4,10 +4,10 @@ public class Documento
 {
     public long Id { get; set; }
     public Guid Guid { get; set; }
-    public short? Sucursal { get; set; }
-    public short? RamoSisseg { get; set; }
+    public int? Sucursal { get; set; }
+    public int? RamoSisseg { get; set; }
     public int? NumeroApolice { get; set; }
-    public short? NumeroSub { get; set; }
+    public int? NumeroSub { get; set; }
     public long? NumeroEndossoCertificado { get; set; }
     public DateTime? DataRegistro { get; set; }
     public DateTime? DataAlteracao { get; set; }
@@ -17,8 +17,8 @@ public class Documento
     public string ApoliceCodigo { get; set; } = string.Empty;
     public string? CertificadoCodigo { get; set; }
     public string? NumeroSusepApolice { get; set; }
-    public short TipoDocumentoEmitido { get; set; }
-    public short NaturezaDocumento { get; set; }
+    public int TipoDocumentoEmitido { get; set; }
+    public int NaturezaDocumento { get; set; }
     public DateTime DataEmissao { get; set; }
     public DateTime DataInicio { get; set; }
     public DateTime DataTermino { get; set; }
@@ -34,10 +34,10 @@ public class Documento
     public decimal AdicionalFracionamento { get; set; }
     public decimal ValorCarregamentoTotal { get; set; }
     public decimal Iof { get; set; }
-    public short NumeroParcelas { get; set; }
-    public short? TipoPlano { get; set; }
-    public decimal? ValorSegurado { get; set; }
-    public decimal? ValorEstipulante { get; set; }
+    public int NumeroParcelas { get; set; }
+    public int TipoPlano { get; set; }
+    public decimal ValorSegurado { get; set; }
+    public decimal ValorEstipulante { get; set; }
     public string? IdentificadorLote { get; set; }
 
     // Navigation properties

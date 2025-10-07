@@ -63,15 +63,19 @@ public class DocumentoRequestDto
     [JsonPropertyName("intermediario")]
     public List<IntermediarioDto>? Intermediario { get; set; }
 
-    //[JsonPropertyName("cobertura_risco_seguro")]
-    //public List<CoberturaRiscoSeguroDto>? CoberturaRiscoSeguro { get; set; }
+    [JsonPropertyName("cobertura_risco_seguro")]
+    public List<CoberturaRiscoSeguroDto> CoberturaRiscoSeguro { get; set; }
+
+    [JsonPropertyName("premio_contribuicao")]
+    public PremioContribuicaoDto? PremioContribuicao { get; set; }
 
     public DocumentoRequestDto()
     {
-        /*SeguradoParticipante = new List<SeguradoParticipanteDto>();
-        Beneficiario = new List<BeneficiarioDto>();
-        BeneficiarioFinal = new List<BeneficiarioDto>();
+        //SeguradoParticipante = new List<SeguradoParticipanteDto>();
+        //Beneficiario = new List<BeneficiarioDto>();
+        //BeneficiarioFinal = new List<BeneficiarioDto>();
         Intermediario = new List<IntermediarioDto>();
-        CoberturaRiscoSeguro = new List<CoberturaRiscoSeguroDto>();*/
+        CoberturaRiscoSeguro = new List<CoberturaRiscoSeguroDto>();
+        PremioContribuicao = new PremioContribuicaoDto();
     }
 }

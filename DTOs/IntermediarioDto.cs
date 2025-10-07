@@ -29,7 +29,7 @@ namespace sro.DTOs
         public string CodigoPostal { get; set; } = string.Empty;
 
         [JsonPropertyName("uf")]
-        public string UF { get; set; } = string.Empty;
+        public string Uf { get; set; } = string.Empty;
 
         [JsonPropertyName("pais")]
         public string Pais { get; set; } = string.Empty;
