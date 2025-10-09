@@ -8,11 +8,12 @@ public class Documento
     public int? RamoSisseg { get; set; }
     public int? NumeroApolice { get; set; }
     public int? NumeroSub { get; set; }
-    public long? NumeroEndossoCertificado { get; set; }
+    public long? NumeroEndosso { get; set; }
     public DateTime? DataRegistro { get; set; }
-    public DateTime? DataAlteracao { get; set; }
     public bool LiberadoEnvio { get; set; }
     public DateTime? DataEnvio { get; set; }
+    public bool? RegistroExcluido { get; set; }
+    public DateTime? DataEnvioExclusao { get; set; }
     public string CodigoSeguradora { get; set; } = string.Empty;
     public string ApoliceCodigo { get; set; } = string.Empty;
     public string? CertificadoCodigo { get; set; }
@@ -24,7 +25,6 @@ public class Documento
     public DateTime DataTermino { get; set; }
     public string MoedaApolice { get; set; } = string.Empty;
     public decimal LimiteMaximoGarantiaReal { get; set; }
-    public decimal? LimiteMaximoGarantiaMoedaOriginal { get; set; }
     public decimal? PercentualRetido { get; set; }
     public bool PossuiBeneficiario { get; set; }
     public bool PossuiBeneficiarioFinal { get; set; }
@@ -38,6 +38,11 @@ public class Documento
     public int TipoPlano { get; set; }
     public decimal ValorSegurado { get; set; }
     public decimal ValorEstipulante { get; set; }
+    public int AlteracaoSequencial { get; set; }
+    public string? AlteracaoCodigo { get; set; }
+    public int AlteracaoTipo { get; set; }
+    public string? AlteracaoDescricao { get; set; }
+    public bool? EndossoAverbavel { get; set; }
     public string? IdentificadorLote { get; set; }
 
     // Navigation properties

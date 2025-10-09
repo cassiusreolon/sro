@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using sro.Models;
 
 namespace sro.Configuration
@@ -8,9 +8,9 @@ namespace sro.Configuration
         public DbSet<Documento> Documento { get; set; } = null!;
         public DbSet<Intermediario>? Intermediario { get; set; }
         public DbSet<CoberturaRiscoSeguro>? CoberturaRiscoSeguro { get; set; }
-        public DbSet<Carencia>? Carencia { get; set; }
         public DbSet<SeguradoParticipante>? SeguradoParticipante { get; set; }
         public DbSet<Beneficiario>? Beneficiario { get; set; }
+        public DbSet<LogProcessamento>? LogProcessamento { get; set; }
 
         public SROContext(DbContextOptions<SROContext> options) : base(options) { }
 
@@ -22,6 +22,7 @@ namespace sro.Configuration
             modelBuilder.Entity<CoberturaRiscoSeguro>().ToTable("CoberturaRiscoSeguro");
             modelBuilder.Entity<SeguradoParticipante>().ToTable("SeguradoParticipante");
             modelBuilder.Entity<Beneficiario>().ToTable("Beneficiario");
+            modelBuilder.Entity<LogProcessamento>().ToTable("LogProcessamento");
 
             modelBuilder.Entity<Documento>()
                 .HasMany(d => d.Intermediarios)
@@ -31,15 +32,11 @@ namespace sro.Configuration
             // Configurações de precisão para propriedades decimal
             modelBuilder.Entity<Intermediario>()
                 .Property(i => i.ValorComissaoReal)
-                .HasPrecision(18, 2); // 18 dígitos totais, 2 casas decimais
+                .HasPrecision(18, 2);
 
             // Configurações de precisão para Documento
             modelBuilder.Entity<Documento>()
                 .Property(d => d.LimiteMaximoGarantiaReal)
-                .HasPrecision(18, 2);
-
-            modelBuilder.Entity<Documento>()
-                .Property(d => d.LimiteMaximoGarantiaMoedaOriginal)
                 .HasPrecision(18, 2);
 
             modelBuilder.Entity<Documento>()
@@ -83,13 +80,12 @@ namespace sro.Configuration
                 .Property(c => c.ValorPremioReal)
                 .HasPrecision(18, 2);
 
-            // CoberturaRiscoSeguro
+            // Relacionamentos
             modelBuilder.Entity<Documento>()
                 .HasMany(d => d.CoberturasRiscoSeguro)
                 .WithOne(c => c.Documento)
                 .HasForeignKey(c => c.DocumentoId);
                 
-            // Documento
             modelBuilder.Entity<Documento>()
                 .HasMany(d => d.SeguradosParticipantes)
                 .WithOne(sp => sp.Documento)
