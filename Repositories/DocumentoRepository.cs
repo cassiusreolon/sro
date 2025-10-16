@@ -20,10 +20,24 @@ namespace sro.Repositories
             return await _context.Documento
                 .Include(d => d.Intermediarios) // Carrega os Intermediarios relacionados
                 .Include(c => c.CoberturasRiscoSeguro) // Carrega as coberturas relacionadas
-                .Where(d => d.DataEnvio == null && d.LiberadoEnvio == true) // Exemplo de filtro para documentos não enviados
+                .Where(d => d.DataEnvio == null &&
+                            d.LiberadoEnvio == true &&
+                            d.AlteracaoSequencial == null) // Envia apenas documentos
+                .OrderBy(d => d.Id)
                 .ToListAsync();
         }
 
+        public async Task<List<Documento>> ObterDocumentosAlteracaoParaEnvioAsync()
+        {
+            return await _context.Documento
+                .Include(d => d.Intermediarios) // Carrega os Intermediarios relacionados
+                .Include(c => c.CoberturasRiscoSeguro) // Carrega as coberturas relacionadas
+                .Where(d => d.DataEnvio == null &&
+                            d.LiberadoEnvio == true &&
+                            d.AlteracaoSequencial != null) // Envia apenas alterações dos documentos
+                .OrderBy(d => d.Id)
+                .ToListAsync();
+        }
         /// Inicia um novo log de processamento
         public async Task<long> IniciarLogProcessamentoAsync(string processo, string usuario)
         {

@@ -6,13 +6,15 @@ namespace sro.Services;
 public class DocumentoService
 {
     private readonly SROContext _context;
+    private readonly IApiExternaHttpService _apiExternaHttpService;
 
-    public DocumentoService(SROContext context)
+    public DocumentoService(SROContext context, IApiExternaHttpService apiExternaHttpService)
     {
         _context = context;
+        _apiExternaHttpService = apiExternaHttpService;
     }
 
-    public async Task<List<DocumentoRequestDto>> EnviarDocumentosRegistroAsync()
+    public async Task<DocumentoResponseDto> EnviarDocumentosRegistroAsync()
     {
         var repository = new DocumentoRepository(_context);
         
@@ -32,187 +34,216 @@ public class DocumentoService
             {
                 // Finaliza o log mesmo se não houver documentos
                 await repository.FinalizarLogProcessamentoAsync(logId);
-                return new List<DocumentoRequestDto>();
+                return new DocumentoResponseDto
+                {
+                    Data = new DocumentoResponseDataDto
+                    {
+                        IdentificadorLote = "Nenhum documento para envio"
+                    }
+                };
             }
 
             var loteDocumentos = new List<DocumentoRequestDto>();
 
-        // Para cada documento a enviar
-        foreach (var documento in documentos)
-        {
-            // bloco "documento"
-            try
+            // Para cada documento a enviar
+            foreach (var documento in documentos)
             {
-                var documentoRequestDto = new DocumentoRequestDto
-                {
-                    CodigoSeguradora = documento.CodigoSeguradora,
-                    ApoliceCodigo = documento.ApoliceCodigo,
-                    CertificadoCodigo = documento.CertificadoCodigo,
-                    NumeroSusepApolice = documento.NumeroSusepApolice,
-                    TipoDocumentoEmitido = documento.TipoDocumentoEmitido,
-                    NaturezaDocumentoId = documento.NaturezaDocumento,
-                    DataEmissao = documento.DataEmissao,
-                    DataInicio = documento.DataInicio,
-                    DataTermino = documento.DataTermino,
-                    MoedaApolice = documento.MoedaApolice,
-                    LimiteMaximoGarantiaReal = documento.LimiteMaximoGarantiaReal,
-                    PercentualRetido = documento.PercentualRetido,
-                    PossuiBeneficiario = documento.PossuiBeneficiario,
-                    PossuiBeneficiarioFinal = documento.PossuiBeneficiarioFinal,
-                    PossuiIntermediario = documento.PossuiIntermediario,
-                    RetificacaoRegistro = documento.RetificacaoRegistro,
-                    Intermediario = new List<IntermediarioDto>(),
-                    //Bloco "premio_contribuicao"
-                    PremioContribuicao = new PremioContribuicaoDto
-                    {
-                        ValorTotalReal = documento.ValorTotalReal,
-                        AdicionalFracionamento = documento.AdicionalFracionamento,
-                        ValorCarregamentoTotal = documento.ValorCarregamentoTotal,
-                        Iof = documento.Iof,
-                        NumeroParcelas = documento.NumeroParcelas,
-                        // bloco "dados_contrato_coletivo"
-                        DadosContratoColetivo = new DadosContratoColetivoDto
-                        {
-                            TipoPlano = documento.TipoPlano,
-                            ValorSegurado = documento.ValorSegurado,
-                            ValorEstipulante = documento.ValorEstipulante
-                        },
-                    }
-                };
-
-                foreach (var intermediario in documento.Intermediarios)
-                {
-                    //Bloco "intermediario"
-                    var intermediarioDto = new IntermediarioDto
-                    {
-                        DocumentoIdentificacao = intermediario.DocumentoIdentificacao,
-                        TipoComissao = intermediario.TipoComissao,
-                        TipoIntermediario = intermediario.TipoIntermediario,
-                        DescricaoIntermediario = intermediario.DescricaoIntermediario,
-                        Codigo = intermediario.Codigo,
-                        TipoDocumento = intermediario.TipoDocumento,
-                        Nome = intermediario.Nome,
-                        CodigoPostal = intermediario.CodigoPostal,
-                        Uf = intermediario.Uf,
-                        Pais = intermediario.Pais,
-                        ValorComissaoReal = intermediario.ValorComissaoReal
-                    };
-                    documentoRequestDto.Intermediario.Add(intermediarioDto);
-                }
-
-                foreach (var cobertura in documento.CoberturasRiscoSeguro)
-                {
-                    //Bloco "cobertura_risco_seguro"
-                    var coberturaDto = new CoberturaRiscoSeguroDto
-                    {
-                        CoberturaInternaSeguradora = cobertura.CoberturaInternaSeguradora,
-                        GrupoRamo = cobertura.GrupoRamo,
-                        CodCoberturaRisco = cobertura.CodCoberturaRisco,
-                        OutrasDescricao = cobertura.OutrasDescricao,
-                        NumeroProcesso = cobertura.NumeroProcesso,
-                        LimiteMaximoIndenizacaoReal = cobertura.LimiteMaximoIndenizacaoReal,
-                        DataInicioCobertura = cobertura.DataInicioCobertura,
-                        DataTerminoCobertura = cobertura.DataTerminoCobertura,
-                        IndiceAtualizacao = cobertura.IndiceAtualizacao,
-                        DescricaoIndiceAtualizacao = cobertura.DescricaoIndiceAtualizacao,
-                        CoberturaCaracteristica = cobertura.CoberturaCaracteristica,
-                        TipoRisco = cobertura.TipoRisco,
-                        CoberturaTipo = cobertura.CoberturaTipo,
-                        PeriodicidadePremio = cobertura.PeriodicidadePremio,
-                        DescricaoPeriodicidade = cobertura.DescricaoPeriodicidade,
-                        ValorPremioReal = cobertura.ValorPremioReal,
-                        Iof = cobertura.Iof,
-                        BaseIndenizacao = cobertura.BaseIndenizacao,
-                        PossuiCarencia = cobertura.PossuiCarencia,
-                        PossuiFranquia = cobertura.PossuiFranquia,
-                        PossuiPos = cobertura.PossuiPos,
-                        //Bloco "pessoas"
-                        Pessoas = new PessoasDto
-                        {
-                            InclusaoDependentes = cobertura.InclusaoDependentes,
-                            AbrangenciaViagem = cobertura.AbrangenciaViagem,
-                            RegimeFinanceiro = cobertura.RegimeFinanceiro,
-                            FormaTarifacao = cobertura.FormaTarifacao,
-                            FormaTarifacaoDescricao = cobertura.FormaTarifacaoDescricao
-                        },
-                        //Bloco "prestamista"
-                        Prestamista = new PrestamistaDto
-                        {
-                            ModalidadeCapital = cobertura.ModalidadeCapital,
-                            PrestamistaTipo = cobertura.PrestamistaTipo,
-                            TipoObrigacao = cobertura.TipoObrigacao,
-                            DescricaoObrigacao = cobertura.DescricaoObrigacao
-                        }
-                    };
-                    documentoRequestDto.CoberturaRiscoSeguro.Add(coberturaDto);
-                }
-                
-                // SeguradoParticipante = ... // Carregar lista de segurados/participantes relacionados (somente na previdencia se necessario)
-                // Beneficiarios = ... // Carregar lista de beneficiarios relacionados (somente no sinistro se necessário)
-
+                // bloco "documento"
                 try
                 {
-                    // Adiciona o documento à lista para processamento
-                    loteDocumentos.Add(documentoRequestDto);
+                    var documentoRequestDto = new DocumentoRequestDto
+                    {
+                        CodigoSeguradora = documento.CodigoSeguradora,
+                        ApoliceCodigo = documento.ApoliceCodigo,
+                        CertificadoCodigo = documento.CertificadoCodigo,
+                        NumeroSusepApolice = documento.NumeroSusepApolice,
+                        TipoDocumentoEmitido = documento.TipoDocumentoEmitido,
+                        NaturezaDocumentoId = documento.NaturezaDocumento,
+                        DataEmissao = documento.DataEmissao,
+                        DataInicio = documento.DataInicio,
+                        DataTermino = documento.DataTermino,
+                        MoedaApolice = documento.MoedaApolice,
+                        LimiteMaximoGarantiaReal = documento.LimiteMaximoGarantiaReal,
+                        PercentualRetido = documento.PercentualRetido,
+                        PossuiBeneficiario = documento.PossuiBeneficiario,
+                        PossuiBeneficiarioFinal = documento.PossuiBeneficiarioFinal,
+                        PossuiIntermediario = documento.PossuiIntermediario,
+                        RetificacaoRegistro = documento.RetificacaoRegistro,
+                        Intermediario = new List<IntermediarioDto>(),
+                        //Bloco "premio_contribuicao"
+                        PremioContribuicao = new PremioContribuicaoDto
+                        {
+                            ValorTotalReal = documento.ValorTotalReal,
+                            AdicionalFracionamento = documento.AdicionalFracionamento,
+                            ValorCarregamentoTotal = documento.ValorCarregamentoTotal,
+                            Iof = documento.Iof,
+                            NumeroParcelas = documento.NumeroParcelas,
+                            // bloco "dados_contrato_coletivo"
+                            DadosContratoColetivo = new DadosContratoColetivoDto
+                            {
+                                TipoPlano = documento.TipoPlano,
+                                ValorSegurado = documento.ValorSegurado,
+                                ValorEstipulante = documento.ValorEstipulante
+                            },
+                        }
+                    };
 
-                    documento.DataEnvio = DateTime.Now;
+                    foreach (var intermediario in documento.Intermediarios)
+                    {
+                        //Bloco "intermediario"
+                        var intermediarioDto = new IntermediarioDto
+                        {
+                            DocumentoIdentificacao = intermediario.DocumentoIdentificacao,
+                            TipoComissao = intermediario.TipoComissao,
+                            TipoIntermediario = intermediario.TipoIntermediario,
+                            DescricaoIntermediario = intermediario.DescricaoIntermediario,
+                            Codigo = intermediario.Codigo,
+                            TipoDocumento = intermediario.TipoDocumento,
+                            Nome = intermediario.Nome,
+                            CodigoPostal = intermediario.CodigoPostal,
+                            Uf = intermediario.Uf,
+                            Pais = intermediario.Pais,
+                            ValorComissaoReal = intermediario.ValorComissaoReal
+                        };
+                        documentoRequestDto.Intermediario.Add(intermediarioDto);
+                    }
+
+                    foreach (var cobertura in documento.CoberturasRiscoSeguro)
+                    {
+                        //Bloco "cobertura_risco_seguro"
+                        var coberturaDto = new CoberturaRiscoSeguroDto
+                        {
+                            CoberturaInternaSeguradora = cobertura.CoberturaInternaSeguradora,
+                            GrupoRamo = cobertura.GrupoRamo,
+                            CodCoberturaRisco = cobertura.CodCoberturaRisco,
+                            OutrasDescricao = cobertura.OutrasDescricao,
+                            NumeroProcesso = cobertura.NumeroProcesso,
+                            LimiteMaximoIndenizacaoReal = cobertura.LimiteMaximoIndenizacaoReal,
+                            DataInicioCobertura = cobertura.DataInicioCobertura,
+                            DataTerminoCobertura = cobertura.DataTerminoCobertura,
+                            IndiceAtualizacao = cobertura.IndiceAtualizacao,
+                            DescricaoIndiceAtualizacao = cobertura.DescricaoIndiceAtualizacao,
+                            CoberturaCaracteristica = cobertura.CoberturaCaracteristica,
+                            TipoRisco = cobertura.TipoRisco,
+                            CoberturaTipo = cobertura.CoberturaTipo,
+                            PeriodicidadePremio = cobertura.PeriodicidadePremio,
+                            DescricaoPeriodicidade = cobertura.DescricaoPeriodicidade,
+                            ValorPremioReal = cobertura.ValorPremioReal,
+                            Iof = cobertura.Iof,
+                            BaseIndenizacao = cobertura.BaseIndenizacao,
+                            PossuiCarencia = cobertura.PossuiCarencia,
+                            PossuiFranquia = cobertura.PossuiFranquia,
+                            PossuiPos = cobertura.PossuiPos,
+                            //Bloco "pessoas"
+                            Pessoas = new PessoasDto
+                            {
+                                InclusaoDependentes = cobertura.InclusaoDependentes,
+                                AbrangenciaViagem = cobertura.AbrangenciaViagem,
+                                RegimeFinanceiro = cobertura.RegimeFinanceiro,
+                                FormaTarifacao = cobertura.FormaTarifacao,
+                                FormaTarifacaoDescricao = cobertura.FormaTarifacaoDescricao
+                            },
+                            //Bloco "prestamista"
+                            Prestamista = new PrestamistaDto
+                            {
+                                ModalidadeCapital = cobertura.ModalidadeCapital,
+                                PrestamistaTipo = cobertura.PrestamistaTipo,
+                                TipoObrigacao = cobertura.TipoObrigacao,
+                                DescricaoObrigacao = cobertura.DescricaoObrigacao
+                            }
+                        };
+                        documentoRequestDto.CoberturaRiscoSeguro.Add(coberturaDto);
+                    }
+                    
+                    // SeguradoParticipante = ... // Carregar lista de segurados/participantes relacionados (somente na previdencia se necessario)
+                    // Beneficiarios = ... // Carregar lista de beneficiarios relacionados (somente no sinistro se necessário)
+
+                    try
+                    {
+                        // Adiciona o documento à lista para processamento
+                        loteDocumentos.Add(documentoRequestDto);
+                        
+                        // DataEnvio será definida apenas após sucesso na API externa
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log do erro ao processar dados do documento
+                        //Console.WriteLine($"Erro ao processar dados do documento ID {documento.Id}: {ex.Message}");
+                        throw new Exception($"Erro ao processar dados do documento ID {documento.Id}: {ex.Message}", ex);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    // Log do erro ao processar dados do documento
-                    //Console.WriteLine($"Erro ao processar dados do documento ID {documento.Id}: {ex.Message}");
-                    throw new Exception($"Erro ao processar dados do documento ID {documento.Id}: {ex.Message}", ex);
+                    // Log do erro ao criar o DTO do documento
+                    //Console.WriteLine($"Erro ao criar DTO do documento ID {documento.Id}: {ex.Message}");
+                    throw new Exception($"Erro ao criar DTO do documento ID {documento.Id}: {ex.Message}", ex);
                 }
             }
-            catch (Exception ex)
-            {
-                // Log do erro ao criar o DTO do documento
-                //Console.WriteLine($"Erro ao criar DTO do documento ID {documento.Id}: {ex.Message}");
-                throw new Exception($"Erro ao criar DTO do documento ID {documento.Id}: {ex.Message}", ex);
-            }
-        }
 
-        // Após processar todos os documentos, tenta enviar para a API externa
-        if (loteDocumentos.Count > 0)
-        {
-            try
+            // Após processar todos os documentos, tenta enviar para a API externa
+            if (loteDocumentos.Count > 0)
             {
-                var responseDto = await EnviarLoteParaApiExternaAsync(loteDocumentos);
-
-                if (responseDto.Sucesso)
+                try
                 {
-                    Console.WriteLine($"Lote enviado com sucesso! Identificador: {responseDto.IdentificadorLote}");
+                    var responseDto = await _apiExternaHttpService.EnviarDocumentosAsync(loteDocumentos);
 
-                    // Atualiza os documentos apenas se o envio foi bem-sucedido
-                    foreach (var documento in documentos)
+                    if (responseDto.Sucesso)
                     {
-                        documento.DataEnvio = DateTime.Now;
+                        Console.WriteLine($"Lote enviado com sucesso! Identificador: {responseDto.IdentificadorLote}");
+
+                        // APENAS EM CASO DE SUCESSO: Atualiza DataEnvio e IdentificadorLote
+                        var dataEnvio = DateTime.Now;
+                        var identificadorLote = responseDto.IdentificadorLote;
+                        
+                        foreach (var documento in documentos)
+                        {
+                            documento.DataEnvio = dataEnvio;
+                            documento.IdentificadorLote = identificadorLote;
+                        }
+                        await _context.SaveChangesAsync();
+                        
+                        Console.WriteLine($"DataEnvio e IdentificadorLote atualizados para {documentos.Count} documentos");
+                        Console.WriteLine($"Identificador do lote: {identificadorLote}");
                     }
-                    await _context.SaveChangesAsync();
+                    else if (responseDto.TemErros)
+                    {
+                        Console.WriteLine("Erro no envio do lote:");
+                        foreach (var erro in responseDto.Erros!)
+                        {
+                            Console.WriteLine($"  - {erro}");
+                        }
+                        Console.WriteLine("DataEnvio NÃO foi atualizada devido aos erros");
+                        // IMPORTANTE: Não chama SaveChanges() aqui - mantém DataEnvio = null
+                    }
+                    else
+                    {
+                        Console.WriteLine("Resposta inesperada da API externa - DataEnvio não foi atualizada");
+                        // IMPORTANTE: Não chama SaveChanges() aqui - mantém DataEnvio = null
+                    }
+
+                    // Retorna a resposta da API externa
+                    return responseDto;
                 }
-                else if (responseDto.TemErros)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Erro no envio do lote:");
-                    foreach (var erro in responseDto.Erros!)
-                    {
-                        Console.WriteLine($"  - {erro}");
-                    }
-                    // Não atualiza DataEnvio em caso de erro
+                    //Console.WriteLine($"Erro ao enviar lote para API externa: {ex.Message}");
+                    throw new Exception($"Erro ao enviar lote para API externa: {ex.Message}", ex);
+                    // Não atualiza DataEnvio em caso de exceção
                 }
             }
-            catch (Exception ex)
+            else
             {
-                //Console.WriteLine($"Erro ao enviar lote para API externa: {ex.Message}");
-                throw new Exception($"Erro ao enviar lote para API externa: {ex.Message}", ex);
-                // Não atualiza DataEnvio em caso de exceção
+                await _context.SaveChangesAsync();
+                
+                // Retorna resposta indicando que não havia documentos
+                return new DocumentoResponseDto
+                {
+                    Data = new DocumentoResponseDataDto
+                    {
+                        IdentificadorLote = "Nenhum documento processado"
+                    }
+                };
             }
-        }
-        else
-        {
-            await _context.SaveChangesAsync();
-        }
-
-            return loteDocumentos;
         }
         finally
         {
@@ -221,48 +252,5 @@ public class DocumentoService
         }
     }
 
-    // Retorno do envio do lote de documentos
-    private async Task<DocumentoResponseDto> EnviarLoteParaApiExternaAsync(List<DocumentoRequestDto> documentos)
-    {
-        // TODO: Implementar chamada HTTP real
-        // Exemplo de implementação:
-        /*
-        using var httpClient = new HttpClient();
-        var json = JsonSerializer.Serialize(documentos);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        
-        try
-        {
-            var response = await httpClient.PostAsync("https://api-externa.com/documentos", content);
-            var responseJson = await response.Content.ReadAsStringAsync();
-            
-            if (response.IsSuccessStatusCode)
-            {
-                return JsonSerializer.Deserialize<DocumentoResponseDto>(responseJson) ?? new DocumentoResponseDto();
-            }
-            else if (response.StatusCode == HttpStatusCode.UnprocessableEntity)
-            {
-                return JsonSerializer.Deserialize<DocumentoResponseDto>(responseJson) ?? new DocumentoResponseDto();
-            }
-            else
-            {
-                throw new HttpRequestException($"Erro HTTP: {response.StatusCode}");
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Erro ao enviar documentos: {ex.Message}", ex);
-        }
-        */
 
-        // Simulação por enquanto - retorna sucesso
-        await Task.Delay(100); // Simula latência de rede
-        return new DocumentoResponseDto
-        {
-            Data = new DocumentoResponseDataDto
-            {
-                IdentificadorLote = Guid.NewGuid().ToString()
-            }
-        };
-    }
 }

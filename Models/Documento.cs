@@ -38,9 +38,9 @@ public class Documento
     public int TipoPlano { get; set; }
     public decimal ValorSegurado { get; set; }
     public decimal ValorEstipulante { get; set; }
-    public int AlteracaoSequencial { get; set; }
+    public int? AlteracaoSequencial { get; set; }
     public string? AlteracaoCodigo { get; set; }
-    public int AlteracaoTipo { get; set; }
+    public int? AlteracaoTipo { get; set; }
     public string? AlteracaoDescricao { get; set; }
     public bool? EndossoAverbavel { get; set; }
     public string? IdentificadorLote { get; set; }

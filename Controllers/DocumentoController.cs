@@ -17,15 +17,51 @@ namespace sro.Controllers
         [HttpPost("enviar")]
         public async Task<IActionResult> EnviarDocumentosRegistro()
         {
-            var documentosRequestDto = await _documentoService.EnviarDocumentosRegistroAsync();
-            if (documentosRequestDto == null || !documentosRequestDto.Any())
-                return Ok(new { mensagem = "Nenhum documento para enviar!" });
-
-            return Ok(new {
-                data = new {
-                    documento = documentosRequestDto 
+            try
+            {
+                var responseDto = await _documentoService.EnviarDocumentosRegistroAsync();
+                
+                if (responseDto.Sucesso)
+                {
+                    return Ok(new 
+                    {
+                        status = "sucesso",
+                        mensagem = "Documentos enviados com sucesso para a B3",
+                        identificadorLote = responseDto.IdentificadorLote,
+                        timestamp = DateTime.Now
+                    });
                 }
-            });
+                else if (responseDto.TemErros)
+                {
+                    return BadRequest(new 
+                    {
+                        status = "erro_validacao",
+                        mensagem = "Erro de validação na B3",
+                        erros = responseDto.Erros,
+                        timestamp = DateTime.Now
+                    });
+                }
+                else
+                {
+                    return Ok(new 
+                    {
+                        status = "sem_documentos",
+                        mensagem = "Nenhum documento para enviar",
+                        identificadorLote = responseDto.IdentificadorLote,
+                        timestamp = DateTime.Now
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new 
+                {
+                    status = "erro_interno",
+                    mensagem = "Erro interno no processamento",
+                    erro = ex.Message,
+                    timestamp = DateTime.Now
+                });
+            }
         }
     }
 }

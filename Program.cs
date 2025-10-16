@@ -11,6 +11,11 @@ builder.Services.AddDbContext<SROContext>(options =>
 
 // Register services
 builder.Services.AddScoped<DocumentoService>();
+builder.Services.AddScoped<IApiExternaAuthService, ApiExternaAuthService>();
+builder.Services.AddScoped<IApiExternaHttpService, ApiExternaHttpService>();
+
+// Configure HttpClient for external API
+builder.Services.AddHttpClient();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
